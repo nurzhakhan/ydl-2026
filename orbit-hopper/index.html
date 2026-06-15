@@ -12,17 +12,35 @@
 
       <!-- HUD поверх канваса во время игры -->
       <div id="hud" class="hidden">
-        <div class="hud-item"><span data-i18n="score">Ұпай</span>: <span id="score">0</span></div>
         <div class="hud-item"><span data-i18n="best">Рекорд</span>: <span id="best">0</span></div>
         <div class="hud-item">★ <span id="currency">0</span></div>
         <div class="hud-item" id="lives">♥♥♥</div>
       </div>
+
+      <!-- Крупный текущий счёт по центру сверху -->
+      <div id="score-big" class="hidden"><span id="score">0</span></div>
 
       <!-- Переключатель языка (виден на всех экранах) -->
       <div id="lang-switch">
         <button data-lang="kk">ҚАЗ</button>
         <button data-lang="ru">РУС</button>
         <button data-lang="en">ENG</button>
+      </div>
+
+      <!-- Кнопка паузы (видна только во время игры; показывает game.js) -->
+      <button id="pause-btn" class="hidden" aria-label="Пауза">❚❚</button>
+
+      <!-- Управление музыкой: кнопка вкл/выкл + ползунок громкости -->
+      <div id="audio-ctrl">
+        <button id="music-toggle" aria-label="Музыка вкл/выкл">🔊</button>
+        <input
+          id="volume"
+          type="range"
+          min="0"
+          max="100"
+          value="40"
+          aria-label="Громкость музыки"
+        />
       </div>
 
       <!-- Стартовый экран -->
@@ -44,6 +62,13 @@
         </div>
         <button id="retry-btn" class="btn" data-i18n="retry">↻ Қайтадан</button>
         <p class="hint" data-i18n-html="retryHint">немесе <kbd>Бос орын</kbd> басыңыз</p>
+      </div>
+
+      <!-- Экран паузы -->
+      <div id="pause-screen" class="overlay hidden">
+        <h2 data-i18n="paused">Пауза</h2>
+        <button id="resume-btn" class="btn" data-i18n="resume">► Жалғастыру</button>
+        <p class="hint" data-i18n-html="pauseHint">немесе <kbd>P</kbd> басыңыз</p>
       </div>
     </div>
 

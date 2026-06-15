@@ -79,6 +79,37 @@
   Sound.load("star", "assets/sound/star.wav", 4, 0.4);
   Sound.load("gameover", "assets/sound/gameover.ogg", 1, 0.6);
 
+  // === Фоновая музыка ======================================================
+  // Один зацикленный трек (CC0 "Heavenly Loop"). Браузеры блокируют автозвук
+  // до первого жеста пользователя, поэтому реально стартуем по первому
+  // клику/тапу/нажатию (см. Music.unlock в инициализации).
+  // Настройки храним в памяти (по условию — без localStorage; при деплое
+  // можно сохранять Music.enabled/volume в localStorage).
+  const Music = {
+    el: new Audio("assets/sound/music.ogg"),
+    enabled: true,
+    volume: 0.4,
+    init() {
+      this.el.loop = true;
+      this.el.volume = this.volume;
+    },
+    // Запустить, если включена и ещё не играет.
+    play() {
+      if (!this.enabled) return;
+      this.el.play().catch(() => {}); // тихо игнорируем блокировку автозвука
+    },
+    setEnabled(on) {
+      this.enabled = on;
+      if (on) this.play();
+      else this.el.pause();
+    },
+    setVolume(v) {
+      this.volume = v;
+      this.el.volume = v;
+    },
+  };
+  Music.init();
+
   // === Частицы =============================================================
   // Лёгкий пул частиц для вспышек при захвате/подборе/гибели.
   let particles = [];
@@ -149,7 +180,12 @@
   };
 
   // === Игровое состояние раунда ============================================
-  const STATE = { START: "start", PLAYING: "playing", GAMEOVER: "gameover" };
+  const STATE = {
+    START: "start",
+    PLAYING: "playing",
+    PAUSED: "paused",
+    GAMEOVER: "gameover",
+  };
   let state = STATE.START;
 
   let planets = [];
@@ -181,6 +217,9 @@
     finalStars: document.getElementById("final-stars"),
     finalBest: document.getElementById("final-best"),
     lives: document.getElementById("lives"),
+    pauseBtn: document.getElementById("pause-btn"),
+    pauseScreen: document.getElementById("pause-screen"),
+    scoreBig: document.getElementById("score-big"),
   };
 
   // === Локализация (i18n) ==================================================
@@ -200,6 +239,9 @@
         "Орбитадан ажырау үшін экранды басыңыз.<br />Келесі планетаның тартылысын ұстап қал.",
       controlsHint: "Басқару: шерту / тап / <kbd>Бос орын</kbd>",
       retryHint: "немесе <kbd>Бос орын</kbd> басыңыз",
+      paused: "Кідіріс",
+      resume: "► Жалғастыру",
+      pauseHint: "немесе <kbd>P</kbd> басыңыз",
     },
     ru: {
       score: "Очки",
@@ -213,6 +255,9 @@
         "Тапни, чтобы оторваться от орбиты.<br />Поймай гравитацию следующей планеты.",
       controlsHint: "Управление: клик / тап / <kbd>Пробел</kbd>",
       retryHint: "или нажми <kbd>Пробел</kbd>",
+      paused: "Пауза",
+      resume: "► Продолжить",
+      pauseHint: "или нажми <kbd>P</kbd>",
     },
     en: {
       score: "Score",
@@ -226,6 +271,9 @@
         "Tap to break away from orbit.<br />Catch the gravity of the next planet.",
       controlsHint: "Controls: click / tap / <kbd>Space</kbd>",
       retryHint: "or press <kbd>Space</kbd>",
+      paused: "Paused",
+      resume: "► Resume",
+      pauseHint: "or press <kbd>P</kbd>",
     },
   };
 
@@ -432,6 +480,8 @@
       startGame();
     } else if (state === STATE.PLAYING) {
       launch();
+    } else if (state === STATE.PAUSED) {
+      resumeGame();
     } else if (state === STATE.GAMEOVER) {
       startGame();
     }
@@ -794,7 +844,10 @@
   function updateHud() {
     el.score.textContent = score;
     el.best.textContent = session.best;
-    el.currency.textContent = session.currency;
+    // Живой кошелёк: накоплено за сессию + собрано в текущем раунде.
+    // (В endGame() starsCollected фиксируется в session.currency, а в новом
+    //  раунде обнуляется — поэтому двойного счёта нет.)
+    el.currency.textContent = session.currency + starsCollected;
     // Полные сердца = оставшиеся попытки, пустые = потраченные.
     el.lives.textContent =
       "♥".repeat(Math.max(0, lives)) +
@@ -806,8 +859,35 @@
     state = STATE.PLAYING;
     el.startScreen.classList.add("hidden");
     el.gameoverScreen.classList.add("hidden");
+    el.pauseScreen.classList.add("hidden");
     el.hud.classList.remove("hidden");
+    el.scoreBig.classList.remove("hidden");
+    el.pauseBtn.classList.remove("hidden");
+    el.pauseBtn.textContent = "❚❚";
     updateHud();
+  }
+
+  // === Пауза ===============================================================
+  // Останавливаем обновление физики (см. главный цикл), показываем оверлей и
+  // ставим музыку на паузу — НЕ трогая пользовательский переключатель музыки
+  // (Music.enabled), чтобы при продолжении вернуть как было.
+  function pauseGame() {
+    if (state !== STATE.PLAYING) return;
+    state = STATE.PAUSED;
+    el.pauseScreen.classList.remove("hidden");
+    el.pauseBtn.textContent = "►";
+    Music.el.pause();
+  }
+  function resumeGame() {
+    if (state !== STATE.PAUSED) return;
+    state = STATE.PLAYING;
+    el.pauseScreen.classList.add("hidden");
+    el.pauseBtn.textContent = "❚❚";
+    Music.play(); // вернётся только если музыка включена пользователем
+  }
+  function togglePause() {
+    if (state === STATE.PLAYING) pauseGame();
+    else if (state === STATE.PAUSED) resumeGame();
   }
 
   // Гибель: тратим попытку. Если попытки остались — возрождаемся и играем
@@ -853,6 +933,8 @@
     el.finalStars.textContent = starsCollected;
     el.finalBest.textContent = session.best;
     el.hud.classList.add("hidden");
+    el.scoreBig.classList.add("hidden");
+    el.pauseBtn.classList.add("hidden");
     el.gameoverScreen.classList.remove("hidden");
   }
 
@@ -865,8 +947,9 @@
     if (state === STATE.PLAYING) {
       update(dt);
     }
-    // Частицы живут независимо от состояния — вспышка догорает на Game Over.
-    updateParticles(dt);
+    // Частицы живут независимо от состояния (вспышка догорает на Game Over),
+    // но на паузе замирают вместе со всей сценой.
+    if (state !== STATE.PAUSED) updateParticles(dt);
     // Рисуем всегда (на старте/гейм-овере виден замерший мир под оверлеем).
     if (astronaut) draw();
 
@@ -877,6 +960,24 @@
   document.getElementById("play-btn").addEventListener("click", startGame);
   document.getElementById("retry-btn").addEventListener("click", startGame);
 
+  // --- Пауза: кнопка, кнопка "Продолжить", клик по оверлею, клавиша P ---
+  el.pauseBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    togglePause();
+  });
+  document.getElementById("resume-btn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    resumeGame();
+  });
+  // Тап по любому месту оверлея паузы продолжает игру.
+  el.pauseScreen.addEventListener("pointerdown", resumeGame);
+  window.addEventListener("keydown", (e) => {
+    if (e.code === "KeyP") {
+      e.preventDefault();
+      togglePause();
+    }
+  });
+
   // Кнопки переключения языка. stopPropagation, чтобы клик по кнопке не
   // считался "действием" игры (отрывом/стартом) через общий обработчик ввода.
   document.querySelectorAll("#lang-switch button").forEach((b) => {
@@ -886,6 +987,31 @@
     });
   });
   setLang(currentLang); // применяем язык по умолчанию
+
+  // --- Управление музыкой ---
+  const musicBtn = document.getElementById("music-toggle");
+  const volumeSlider = document.getElementById("volume");
+
+  musicBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    Music.setEnabled(!Music.enabled);
+    musicBtn.textContent = Music.enabled ? "🔊" : "🔇";
+    musicBtn.classList.toggle("off", !Music.enabled);
+  });
+  volumeSlider.addEventListener("input", (e) => {
+    e.stopPropagation();
+    Music.setVolume(Number(volumeSlider.value) / 100);
+    // Двинули громкость в плюс при выключенной музыке -> считаем как «включить».
+    if (Music.volume > 0 && !Music.enabled) musicBtn.click();
+  });
+
+  // Разблокировка звука: первый жест пользователя запускает музыку (политика
+  // автозвука в браузерах). Слушатель одноразовый — { once: true }.
+  function unlockAudio() {
+    Music.play();
+  }
+  window.addEventListener("pointerdown", unlockAudio, { once: true });
+  window.addEventListener("keydown", unlockAudio, { once: true });
 
   Input.onAction = handleAction;
   Input.attach();

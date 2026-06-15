@@ -16,3 +16,5 @@ CC0 = можно использовать свободно, в т.ч. комме
   launch=laser_small, capture=force_field, gameover=explosion_crunch
 - `sound/star.wav` — синтезирован нами (короткий "коин"-бип, 0.2с). Public domain.
   Заменил длинный 5-секундный computer_noise, который звучал как фоновая музыка.
+- `sound/music.ogg` — "Heavenly Loop" by isaiah658 (CC0), зацикленный эмбиент.
+  https://opengameart.org/content/heavenly-loop

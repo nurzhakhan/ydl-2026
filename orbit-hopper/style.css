@@ -41,11 +41,28 @@ body {
   top: 14px;
   left: 16px;
   display: flex;
-  gap: 18px;
-  font-size: 18px;
+  flex-direction: column; /* в столбик, чтобы не слипалось в углу */
+  gap: 7px;
+  font-size: 17px;
   font-weight: bold;
   text-shadow: 0 0 8px rgba(120, 180, 255, 0.6);
   pointer-events: none; /* HUD не должен перехватывать клики по игре */
+}
+
+/* Крупный текущий счёт по центру сверху */
+#score-big {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(34px, 8vw, 64px);
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(127, 216, 255, 0.85);
+  pointer-events: none;
+  z-index: 15;
 }
 .hud-item span {
   color: #7fd8ff;
@@ -164,6 +181,57 @@ kbd {
   color: #05060f;
   background: #7fd8ff;
   border-color: #7fd8ff;
+}
+
+/* --- Кнопка паузы --- */
+#pause-btn {
+  position: absolute;
+  top: 52px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  color: #aecbff;
+  background: rgba(20, 30, 60, 0.6);
+  border: 1px solid rgba(127, 216, 255, 0.35);
+  border-radius: 999px;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.12s ease;
+}
+#pause-btn:hover {
+  color: #fff;
+  border-color: rgba(127, 216, 255, 0.8);
+}
+
+/* --- Управление музыкой --- */
+#audio-ctrl {
+  position: absolute;
+  bottom: 14px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  background: rgba(20, 30, 60, 0.6);
+  border: 1px solid rgba(127, 216, 255, 0.35);
+  border-radius: 999px;
+  z-index: 20; /* выше оверлеев — доступно на всех экранах */
+}
+#music-toggle {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+}
+#music-toggle.off {
+  opacity: 0.45; /* приглушаем иконку, когда музыка выключена */
+}
+#volume {
+  width: 90px;
+  cursor: pointer;
+  accent-color: #7fd8ff; /* цвет ползунка в современных браузерах */
 }
 
 .hidden {
