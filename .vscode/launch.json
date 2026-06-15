@@ -1,0 +1,11 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Package: y_data_lab",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "y_data_lab"
+        }
+    ]
+}

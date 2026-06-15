@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# secrets / credentials
+creds.txt
+*.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
