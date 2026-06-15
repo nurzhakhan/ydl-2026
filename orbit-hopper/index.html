@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="kk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Orbit Hopper</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="game">
+      <canvas id="canvas"></canvas>
+
+      <!-- HUD поверх канваса во время игры -->
+      <div id="hud" class="hidden">
+        <div class="hud-item"><span data-i18n="score">Ұпай</span>: <span id="score">0</span></div>
+        <div class="hud-item"><span data-i18n="best">Рекорд</span>: <span id="best">0</span></div>
+        <div class="hud-item">★ <span id="currency">0</span></div>
+        <div class="hud-item" id="lives">♥♥♥</div>
+      </div>
+
+      <!-- Переключатель языка (виден на всех экранах) -->
+      <div id="lang-switch">
+        <button data-lang="kk">ҚАЗ</button>
+        <button data-lang="ru">РУС</button>
+        <button data-lang="en">ENG</button>
+      </div>
+
+      <!-- Стартовый экран -->
+      <div id="start-screen" class="overlay">
+        <h1>ORBIT&nbsp;HOPPER</h1>
+        <p class="tagline" data-i18n-html="tagline">Орбитадан ажырау үшін экранды басыңыз.<br />Келесі планетаның тартылысын ұстап қал.</p>
+        <button id="play-btn" class="btn" data-i18n="play">► Ойнау</button>
+        <p class="hint" data-i18n-html="controlsHint">Басқару: шерту / тап / <kbd>Бос орын</kbd></p>
+      </div>
+
+      <!-- Экран проигрыша -->
+      <div id="gameover-screen" class="overlay hidden">
+        <h2 data-i18n="gameOver">Ұшу аяқталды</h2>
+        <div class="stats">
+          <div><span data-i18n="score">Ұпай</span>: <span id="final-score">0</span></div>
+          <div><span data-i18n="jumps">Секірулер</span>: <span id="final-jumps">0</span></div>
+          <div><span data-i18n="collected">Жиналған</span> ★: <span id="final-stars">0</span></div>
+          <div><span data-i18n="best">Рекорд</span>: <span id="final-best">0</span></div>
+        </div>
+        <button id="retry-btn" class="btn" data-i18n="retry">↻ Қайтадан</button>
+        <p class="hint" data-i18n-html="retryHint">немесе <kbd>Бос орын</kbd> басыңыз</p>
+      </div>
+    </div>
+
+    <!-- Сначала чистая логика, потом игра, которая её использует. -->
+    <script src="physics.js"></script>
+    <script src="game.js"></script>
+  </body>
+</html>

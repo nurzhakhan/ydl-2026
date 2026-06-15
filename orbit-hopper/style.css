@@ -1,0 +1,171 @@
+/* style.css — оформление экранов и HUD. Сам игровой мир рисуется на canvas. */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #05060f;
+  font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  color: #eaf2ff;
+  /* Запрещаем выделение/масштаб по двойному тапу на мобильных. */
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+#canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Лёгкий радиальный градиент имитирует глубокий космос. */
+  background: radial-gradient(circle at 50% 35%, #131a36 0%, #05060f 70%);
+  cursor: pointer;
+}
+
+/* --- HUD --- */
+#hud {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  display: flex;
+  gap: 18px;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(120, 180, 255, 0.6);
+  pointer-events: none; /* HUD не должен перехватывать клики по игре */
+}
+.hud-item span {
+  color: #7fd8ff;
+}
+#lives {
+  color: #ff8da3; /* сердца */
+  letter-spacing: 2px;
+}
+
+/* --- Полноэкранные оверлеи (старт / гейм-овер) --- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  padding: 24px;
+  background: rgba(5, 6, 15, 0.72);
+  backdrop-filter: blur(3px);
+  z-index: 10;
+}
+
+h1 {
+  font-size: clamp(36px, 9vw, 76px);
+  letter-spacing: 6px;
+  color: #9fe0ff;
+  text-shadow: 0 0 24px rgba(80, 170, 255, 0.8);
+}
+
+h2 {
+  font-size: clamp(28px, 7vw, 52px);
+  color: #ff8da3;
+  text-shadow: 0 0 20px rgba(255, 90, 130, 0.7);
+}
+
+.tagline {
+  font-size: clamp(15px, 3.5vw, 20px);
+  line-height: 1.6;
+  opacity: 0.85;
+  max-width: 460px;
+}
+
+.stats {
+  display: grid;
+  gap: 6px;
+  font-size: 19px;
+  line-height: 1.5;
+}
+.stats span {
+  color: #7fd8ff;
+  font-weight: bold;
+}
+
+.btn {
+  margin-top: 6px;
+  padding: 14px 38px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #05060f;
+  background: linear-gradient(135deg, #7fd8ff, #5a9bff);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 0 24px rgba(90, 155, 255, 0.6);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 32px rgba(120, 200, 255, 0.9);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+
+.hint {
+  font-size: 14px;
+  opacity: 0.6;
+}
+kbd {
+  padding: 2px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+/* --- Переключатель языка --- */
+#lang-switch {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
+  z-index: 20; /* выше оверлеев, чтобы переключать на любом экране */
+}
+#lang-switch button {
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #aecbff;
+  background: rgba(20, 30, 60, 0.6);
+  border: 1px solid rgba(127, 216, 255, 0.35);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+#lang-switch button:hover {
+  color: #fff;
+  border-color: rgba(127, 216, 255, 0.8);
+}
+#lang-switch button.active {
+  color: #05060f;
+  background: #7fd8ff;
+  border-color: #7fd8ff;
+}
+
+.hidden {
+  display: none !important;
+}
