@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Рецепты долгожители</title>
+<style>
+  @page { size: A4 portrait; margin: 10mm; }
+
+  :root{
+    --ink:#2b2118;
+    --muted:#8a7a66;
+    --line:#e4d9c8;
+    --accent:#b4622d;
+    --paper:#fffdf8;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    font-family: Georgia, "Times New Roman", serif;
+    background:#d9cdb8;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    padding:18px;
+  }
+
+  .sheet{
+    width:210mm;
+    min-height:297mm;
+    background:var(--paper);
+    padding:14mm 12mm 10mm;
+    box-shadow:0 10px 40px rgba(0,0,0,.18);
+    display:flex;
+    flex-direction:column;
+  }
+
+  header{
+    text-align:center;
+    border-bottom:2px solid var(--accent);
+    padding-bottom:9px;
+    margin-bottom:12px;
+  }
+  header .kicker{
+    font-size:11px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--muted); margin-bottom:6px;
+  }
+  header h1{
+    font-size:34px; font-weight:700; letter-spacing:.5px;
+    color:var(--ink); line-height:1;
+  }
+  header .sub{
+    font-size:11.5px; color:var(--muted); margin-top:7px; font-style:italic;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px 12px;
+    flex:1;
+  }
+
+  .card{
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+  }
+  .photo{
+    position:relative;
+    width:100%;
+    height:43mm;
+    background:#efe7d8;
+  }
+  .photo img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .photo .rank{
+    position:absolute; top:6px; left:6px;
+    width:24px; height:24px; border-radius:50%;
+    background:var(--accent); color:#fff;
+    font-size:13px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 4px rgba(0,0,0,.3);
+  }
+  .photo .fallback{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; color:var(--muted); text-align:center; padding:8px;
+  }
+  .body{
+    padding:7px 9px 8px;
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .name{ font-size:13.5px; font-weight:700; line-height:1.15; text-transform:capitalize; }
+  .meta{ font-size:10.5px; color:var(--muted); display:flex; gap:10px; }
+  .meta b{ color:var(--accent); font-weight:700; }
+
+  footer{
+    margin-top:11px; padding-top:7px; border-top:1px solid var(--line);
+    font-size:9.5px; color:var(--muted); text-align:center;
+  }
+
+  @media print{
+    body{ background:#fff; padding:0; }
+    .sheet{ box-shadow:none; width:auto; min-height:auto; padding:0; }
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <header>
+      <div class="kicker">Food.com · анализ долговечности</div>
+      <h1>Рецепты долгожители</h1>
+      <div class="sub">Десять блюд, которые люди готовят и оценивают почти 18 лет подряд</div>
+    </header>
+
+    <div class="grid" id="grid"></div>
+
+    <footer>
+      Источник: датасет Food.com (RAW_recipes + RAW_interactions). «Срок жизни» — годы между первым и последним отзывом. Фото: Wikimedia Commons.
+    </footer>
+  </div>
+
+<script>
+  const BASE = "https://commons.wikimedia.org/wiki/Special:FilePath/";
+  const recipes = [
+    { name:"Neiman Marcus chocolate chip cookies", years:"18.5", rating:"4.28", file:"Chocolate_chip_cookies.jpg" },
+    { name:"Hooters buffalo wings", years:"18.0", rating:"4.80", file:"An_order_of_buffalo_wings_from_Packy%27s_Sports_Grill_in_Boca_Raton%2C_Florida.jpg" },
+    { name:"Famous Barr's french onion soup", years:"18.0", rating:"4.07", file:"Plate_french_onion_soup.jpg" },
+    { name:"Kevin's best corned beef", years:"18.0", rating:"4.34", file:"Cooked_corned_beef.JPG" },
+    { name:"Crock pot chicken gravy and stuffing", years:"17.9", rating:"4.40", file:"Chicken_Breast_Dinner_1_2013-04-20.jpg" },
+    { name:"Chicken tortilla soup II", years:"17.9", rating:"4.55", file:"Tortilla_Soup.jpg" },
+    { name:"Pete's scratch pancakes", years:"17.8", rating:"4.39", file:"Silver_dollar_pancakes.JPG" },
+    { name:"Crock pot beef stew", years:"17.8", rating:"4.11", file:"Stew.JPG" },
+    { name:"Jiffy corn pudding", years:"17.7", rating:"4.70", file:"Southwestern_Corn_Pudding_%28140491239%29.jpeg" },
+    { name:"Best banana bread", years:"17.7", rating:"4.19", file:"Banana_bread_078.jpg" },
+  ];
+
+  const grid = document.getElementById("grid");
+  recipes.forEach((r, i) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="photo">
+        <div class="rank">${i+1}</div>
+        <div class="fallback">${r.name}</div>
+        <img src="${BASE}${r.file}?width=520" alt="${r.name}"
+             onload="this.previousElementSibling.style.display='none'"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="body">
+        <div class="name">${r.name}</div>
+        <div class="meta"><span>Срок жизни: <b>${r.years} лет</b></span><span>Рейтинг: <b>★${r.rating}</b></span></div>
+      </div>`;
+    grid.appendChild(card);
+  });
+</script>
+</body>
+</html>
