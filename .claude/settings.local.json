@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(gh auth *)"
+      "Bash(gh auth *)",
+      "Bash(curl -s \"https://almaty-marathon.kz/en/results/almaty_half_marathon_2026\")",
+      "Bash(python3 -c ' *)",
+      "Bash(git add *)",
+      "Bash(python3 *)",
+      "Bash(jupyter lab *)"
     ]
   }
 }
