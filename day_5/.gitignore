@@ -1,0 +1,20 @@
+# Секреты
+.env
+*.env
+creds.txt
+
+# Логи (рантайм, не коммитим)
+*.log
+data/*.log
+
+# Данные и индекс (не коммитим — генерируются ingest)
+data/index/
+data/knowledge/
+data/raw_docs/*
+!data/raw_docs/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
