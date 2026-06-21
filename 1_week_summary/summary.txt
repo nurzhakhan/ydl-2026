@@ -1,0 +1,80 @@
+СВОДКА ЗА ПЕРВУЮ НЕДЕЛЮ — YDL 2026
+Vibe Coding для работы с данными - Тимур Бакибаев
+====================================
+
+День 1. Игра orbit-hopper + настройка CLAUDE.md.
+
+День 2. NumPy/pandas: ноутбук + датасет «Алматинский полумарафон 2026».
+        Анализ рецептов (Food.com + USDA) с коллажами.
+
+День 3. Seaborn EDA + анализ уровня воды в реках (USGS).
+
+День 4. Предсказание выживаемости на Titanic (линейная регрессия). / https://www.kaggle.com/competitions/titanic/leaderboard - my final score: 0.79186
+
+День 5. ИИ-Телеграм-бот Фонда Шахмардана Есенова (главный проект недели). Буду улучшать.
+--------------------------------------------------------------------
+Что построено:
+  - RAG-поиск по официальному сайту yessenovfoundation.org + ручная база.
+  - LLM Gemma (alem.ai) с автоповтором на сбои бэкенда.
+  - Векторный индекс на numpy (косинусная близость), embeddings text-1024.
+  - Сбор данных: скрейпер сайта (только разделы программ, без новостей) +
+    загрузчик личных файлов с переводом на RU/KZ/EN.
+
+UX бота:
+  - Онбординг: выбор языка (RU/KZ/EN) -> описание фонда -> выбор роли.
+  - Роли: абитуриент / выпускник / спонсор, у каждой своё описание и
+    кнопки-подсказки с типовыми вопросами.
+  - Кнопка «Настройки» у поля ввода (смена языка).
+  - Память диалога + умный follow-up (понимает «а какие там сроки?»).
+  - Корректное форматирование ответов (жирный, списки) + ссылки на источники.
+
+Качество (найдено и исправлено в ходе тестов):
+  - Приоритет ручной базы над сайтом (+ кросс-язык).
+  - Приоритет свежих данных; при указании года — приоритет этому году.
+  - Дедупликация ручной базы, баланс слотов контекста.
+  - Осознание текущей даты (статус программ: идёт / завершилась / приём).
+  - Грундинг: не выдумывает, устойчив к off-topic и prompt-injection.
+
+Данные пользователя в базе: миссия/отчёты, список программ, контакты.
+
+Статус: бот @yessenov_found_bot рабочий, код залит в git (day_5),
+        ключи — только локально в .env (в репозиторий не попадают).
+
+Исследование: telegram_bots_foundations_research.md — разбор лучших
+              мировых ботов фондов/НКО и best practices.
+
+
+----------------
+Запись уроков: https://app.commit.kz/courses/3/course_detail 
+Лабкада скрин экран қосу: https://main.oqulabs.kz/courses/16 
+Git hub: https://github.com/timurbakibayev/ydl-2026/tree/main
+Чат бот/ сайт жасауға болатын сайт: https://streamlit.io/
+Браузерге доступ беру: https://docs.browsermcp.io/
+
+
+Изученные билбиотек python: seaborn(дата сет и график), pandas, matplot(https://matplotlib.org/)
+Kaggle Datasets:
+- https://www.kaggle.com/datasets/rabieelkharoua/students-performance-dataset/code
+- https://www.kaggle.com/search?q=teen+mental+health
+- https://www.kaggle.com/datasets/argonnxx/teen-mental-health
+- https://www.kaggle.com/datasets/murderaccountability/homicide-reports
+- https://www.kaggle.com/datasets/laveshjadon/ai-impact-on-students/discussion/708121
+
+Claude Skills: https://code.claude.com/docs/en/skills and https://claudeskills.info/
+Для ИИ агентhttps://playwright.dev/docs/getting-started-mcp
+
+Термины которые я забыла/не знала:
+Гистограмма — это способ графического представления данных в виде вертикальных столбцов, показывающий частоту появления различных значений в заданном диапазоне.
+
+Distribution refers to the act of dividing, spreading, or supplying items, resources, or data to various recipients or locations.
+
+Sankey diagram (often misspelled or misheard as "Samek graph"), which is a highly popular type of data visualization used to depict flows and transitions between different categories, states, or stages.
+
+In a box plot, outliers are individual data points that fall outside the main range of your data, typically plotted as individual dots or asterisks.
+
+Feature engineering is the process of using domain knowledge to transform, extract, and select raw data into meaningful numerical inputs for machine learning models.
+
+Linear regression is a supervised machine learning algorithm used to model the relationship between a dependent target variable and one or more independent predictor variables. 
+
+Шлюпка — это малое беспалубное мореходное судно, предназначенное для перевозки людей и грузов, связи с берегом и спасения терпящих бедствие.
+
