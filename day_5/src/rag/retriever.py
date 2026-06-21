@@ -89,6 +89,7 @@ class Retriever:
         # Берём фрагменты твоих файлов, которые лексически совпадают с вопросом
         # и проходят мягкий порог близости. Они идут ПЕРВЫМИ в контексте.
         manual: list[RetrievedChunk] = []
+        seen_files: set[str] = set()
         for meta, score in all_hits:
             if meta.get("origin") != "file":
                 continue
@@ -96,6 +97,10 @@ class Retriever:
                 continue
             if _lexical_overlap(question, meta.get("text", "")) == 0:
                 continue
+            src = meta.get("source", "")
+            if src in seen_files:  # тот же файл в другом языке уже взят — пропускаем
+                continue
+            seen_files.add(src)
             manual.append(to_chunk(meta, score))
             if len(manual) >= settings.manual_reserve:
                 break

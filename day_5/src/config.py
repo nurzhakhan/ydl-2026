@@ -71,7 +71,7 @@ class Settings:
     # близость не ниже manual_min_score. manual_reserve — сколько верхних
     # мест резервируется под ручную базу.
     manual_min_score: float = float(_get("MANUAL_MIN_SCORE", "0.08"))
-    manual_reserve: int = int(_get("MANUAL_RESERVE", "2"))
+    manual_reserve: int = int(_get("MANUAL_RESERVE", "1"))
     # Многоязычная индексация ручной базы: переводим твои файлы на эти языки,
     # чтобы вопрос на любом из них находил нужную версию (кросс-язык).
     manual_multilingual: bool = _get("MANUAL_MULTILINGUAL", "true").lower() == "true"
