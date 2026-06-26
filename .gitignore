@@ -18,3 +18,7 @@ Untitled*.ipynb
 
 # Datasets (большие, качаются скриптом)
 day_2/data/
+
+# CatBoost training logs (авто-генерируются)
+catboost_info/
+inception/catboost_info/
