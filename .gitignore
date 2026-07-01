@@ -22,6 +22,11 @@ week_3_day_1/data/
 week_3_day_2/data/
 week_3_day_2/outputs/
 week_3_day_2/*.csv
+week_3_day_3/data/
+week_3_day_3/data_real_vs_ai/
+
+# Trained models (большие, генерируются ноутбуком)
+*.pt
 
 # CatBoost training logs (авто-генерируются)
 catboost_info/
