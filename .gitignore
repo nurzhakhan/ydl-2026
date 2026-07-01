@@ -19,6 +19,9 @@ Untitled*.ipynb
 # Datasets (большие, качаются скриптом)
 day_2/data/
 week_3_day_1/data/
+week_3_day_2/data/
+week_3_day_2/outputs/
+week_3_day_2/*.csv
 
 # CatBoost training logs (авто-генерируются)
 catboost_info/
